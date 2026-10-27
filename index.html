@@ -77,7 +77,7 @@ button:disabled{opacity:.6}
   }
   const msg = t => { $("msg").textContent = t; };
   if (!window.crypto || !crypto.subtle) { msg("この環境では開けません。https のアドレスで開いてください。"); $("go").disabled = true; }
-  if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+  if ("serviceWorker" in navigator) window.addEventListener("load", () => { const had = !!navigator.serviceWorker.controller; navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).then(r => r.update()).catch(() => {}); navigator.serviceWorker.addEventListener("controllerchange", () => { if (had && !window.__rl) { window.__rl = 1; location.reload(); } }); });
   (async () => {
     try {
       const s = JSON.parse(localStorage.getItem(KEY) || "null");
